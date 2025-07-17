@@ -22,7 +22,20 @@ app.post("/webhook", async (req, res) => {
   });
 
   const data = await gptResponse.json();
-  const reply = data.choices[0].message.content;
+  let reply;
+
+if (
+  data &&
+  data.choices &&
+  data.choices.length > 0 &&
+  data.choices[0].message &&
+  data.choices[0].message.content
+) {
+  reply = data.choices[0].message.content;
+} else {
+  console.error("❌ OpenAI Antwort unbrauchbar:", JSON.stringify(data));
+  reply = "Sorry, da ist was schiefgelaufen.";
+}
 
   res.send({ reply });
 });
